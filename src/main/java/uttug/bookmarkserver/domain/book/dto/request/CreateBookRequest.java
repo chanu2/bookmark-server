@@ -17,6 +17,8 @@ public class CreateBookRequest {
     @Size(min = 1, max = 18)
     private String bookName;
     private String author;
+
+    private String publisher;
     private Integer pageNumber;
 
 }

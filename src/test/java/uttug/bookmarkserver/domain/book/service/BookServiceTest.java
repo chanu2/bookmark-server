@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+import uttug.bookmarkserver.domain.book.dto.request.CreateBookRequest;
 import uttug.bookmarkserver.domain.book.entity.Book;
 import uttug.bookmarkserver.domain.book.repository.BookRepository;
 import uttug.bookmarkserver.domain.common.Gender;
@@ -28,6 +29,20 @@ class BookServiceTest {
 
     @Autowired
     BookRepository bookRepository;
+
+    @Autowired
+    BookService bookService;
+
+    @Test
+    public void 책_생성 () {
+
+        CreateBookRequest createBookRequest = new CreateBookRequest("asdwd","돈키호테",120);
+
+
+
+
+
+    }
 
     @Test
     public void 내가쓴_책_리스트_가져오기() {
@@ -66,7 +81,6 @@ class BookServiceTest {
         em.clear();
 
 
-
         List<Book> bookList = bookRepository.findBooksByUserEmailOrderByCreatedDateDesc("mdsoo55828@gmail.com");
         for (Book book : bookList) {
             System.out.println("book.getBookName() = " + book.getBookName());
@@ -74,7 +88,8 @@ class BookServiceTest {
         }
 
 
-
     }
+
+
 
 }

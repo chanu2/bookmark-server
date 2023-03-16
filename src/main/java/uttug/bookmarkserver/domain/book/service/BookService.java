@@ -11,6 +11,7 @@ import uttug.bookmarkserver.domain.asset.service.AssetUtils;
 import uttug.bookmarkserver.domain.book.dto.request.CreateBookRequest;
 import uttug.bookmarkserver.domain.book.dto.request.UpdateBookRequest;
 import uttug.bookmarkserver.domain.book.dto.response.BookClubInfoDto;
+import uttug.bookmarkserver.domain.book.dto.response.BookResponse;
 import uttug.bookmarkserver.domain.book.dto.response.MyBookListDto;
 import uttug.bookmarkserver.domain.book.entity.Book;
 import uttug.bookmarkserver.domain.book.exception.BookNotFoundException;
@@ -30,21 +31,20 @@ public class BookService implements BookUtils {
 
     private final BookRepository bookRepository;
     private final UserUtils userUtils;
-    private final AssetUtils assetUtils;
 
 
     // 책 생성
     @Transactional
-    public Book createBook(CreateBookRequest createBookRequest){
+    public BookResponse createBook(CreateBookRequest createBookRequest){
 
         User user = userUtils.getUserFromSecurityContext();
+
         Book book = makeBook(createBookRequest, user);
+
         bookRepository.save(book);
 
-        return book;
-
+        return new BookResponse(book);
     }
-
 
     //책 삭제
     @Transactional
@@ -59,9 +59,10 @@ public class BookService implements BookUtils {
         bookRepository.delete(book);
     }
 
+
     // 책 내용 수정
     @Transactional
-    public void updateBook(Long bookId, UpdateBookRequest updateBookRequest ){
+    public BookResponse updateBook(Long bookId, UpdateBookRequest updateBookRequest ){
 
         String currentUserEmail = SecurityUtils.getCurrentUserEmail();
         Book book = queryBook(bookId);
@@ -69,7 +70,10 @@ public class BookService implements BookUtils {
 
         book.updateBook(updateBookRequest.toUpdateBookDto());
 
+        return new BookResponse(book);
     }
+
+
 
     // 내가 쓴 책 리스트
     public List<MyBookListDto> getMyBookList(){
@@ -82,14 +86,17 @@ public class BookService implements BookUtils {
     }
 
 
-
     // 내가 쓴 책 홈화면 리스트
     public List<Book> getMyHomeBookList(){
+
         String currentUserEmail = SecurityUtils.getCurrentUserEmail();
         return bookRepository.findBooksByUserEmailOrderByCreatedDateAsc(currentUserEmail);
+
     }
 
+
     // 자랑하기
+    @Transactional
     public void postBook(Long bookId){
 
         String currentUserEmail = SecurityUtils.getCurrentUserEmail();
@@ -102,6 +109,7 @@ public class BookService implements BookUtils {
     }
 
     // 자랑하기 취소
+    @Transactional
     public void deletePostBook(Long bookId){
 
         String currentUserEmail = SecurityUtils.getCurrentUserEmail();
@@ -113,10 +121,11 @@ public class BookService implements BookUtils {
         book.deletePostBook();
     }
 
-    // 북클럽 리스트
-    public Slice<BookClubInfoDto> bookClubList(){
 
-        PageRequest pageRequest = PageRequest.of(0,20, Sort.Direction.DESC,"likeNumber");
+    // 북클럽 리스트
+    public Slice<BookClubInfoDto> bookClubList(Integer page){
+
+        PageRequest pageRequest = PageRequest.of(page,2, Sort.Direction.DESC,"likeNumber");
 
         Slice<Book> bookList = bookRepository.findBy(pageRequest);
 
@@ -131,10 +140,6 @@ public class BookService implements BookUtils {
 
     }
 
-    //
-
-
-
 
 
     private Book makeBook(CreateBookRequest createBookRequest,User host){
@@ -143,6 +148,7 @@ public class BookService implements BookUtils {
                 .user(host)
                 .bookName(createBookRequest.getBookName())
                 .author(createBookRequest.getAuthor())
+                .publisher(createBookRequest.getPublisher())
                 .pageNumber(createBookRequest.getPageNumber())
                 .build();
 
@@ -155,7 +161,6 @@ public class BookService implements BookUtils {
                 .findById(bookId)
                 .orElseThrow(() -> BookNotFoundException.EXCEPTION);
     }
-
 
 
 }

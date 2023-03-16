@@ -83,10 +83,10 @@ public class Book extends BaseEntity {
     public void addElapsedDay(){ elapsedDay+=1; }
 
     public void postBook(){
-        registrationStatus = true;
+        this.registrationStatus = true;
     }
     public void deletePostBook(){
-        registrationStatus = false;
+        this.registrationStatus = false;
     }
 
 

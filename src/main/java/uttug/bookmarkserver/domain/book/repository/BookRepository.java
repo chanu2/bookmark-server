@@ -22,6 +22,13 @@ public interface BookRepository extends JpaRepository<Book,Long> {
     List<Book> findBooksByUserEmailOrderByCreatedDateAsc(String email);
 
     Slice<Book> findBy(PageRequest pageRequest);
+    Slice<Book> findAllByRegistrationStatus(PageRequest pageRequest,Boolean status);
+
+    @Query("select distinct b from Book b"+
+            " join fetch b.bookMarks bs"+
+            " where b.user.email = :email order by b.createdDate DESC ")
+    List<Book> findMyBook(@Param("email") String email);
+
 
 
 }

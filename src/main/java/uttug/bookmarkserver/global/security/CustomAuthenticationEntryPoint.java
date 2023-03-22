@@ -47,7 +47,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     }
 
     /**
-     * 한글 출력을 위해 getWriter() 사용
+     * 한글 출력
      */
     private void setResponse(HttpServletResponse response, ErrorCode errorCode) throws IOException {
         response.setContentType("application/json;charset=UTF-8");

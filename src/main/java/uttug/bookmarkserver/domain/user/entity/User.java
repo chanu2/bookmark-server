@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import uttug.bookmarkserver.domain.book.entity.Book;
 import uttug.bookmarkserver.domain.common.Gender;
 
@@ -22,9 +23,6 @@ public class User {
     @Column(name = "user_id")
     private Long id;
 
-//    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-//    private List<Book> bookList = new ArrayList<>();
-
     @Column(nullable = false, length =50, unique = true)
     private String email;
     private String profilePath;
@@ -33,7 +31,8 @@ public class User {
 
     private String nickname;
 
-    @ElementCollection(fetch = FetchType.LAZY)
+//    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             joinColumns = @JoinColumn(name = "user_id"))
     private List<String> roles = new ArrayList<>();
@@ -49,6 +48,9 @@ public class User {
     }
 
 
-
+    public void changeUser(String nickname,String profilePath){
+        this.nickname = nickname;
+        this.profilePath = profilePath;
+    }
 
 }

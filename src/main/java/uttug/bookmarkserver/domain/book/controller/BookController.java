@@ -1,20 +1,17 @@
 package uttug.bookmarkserver.domain.book.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Slice;
 import org.springframework.web.bind.annotation.*;
 import uttug.bookmarkserver.domain.book.dto.request.CreateBookRequest;
 import uttug.bookmarkserver.domain.book.dto.request.UpdateBookRequest;
-import uttug.bookmarkserver.domain.book.dto.response.BookClubInfoDto;
-import uttug.bookmarkserver.domain.book.dto.response.BookResponse;
-import uttug.bookmarkserver.domain.book.dto.response.MyBookListDto;
+import uttug.bookmarkserver.domain.book.dto.response.*;
 import uttug.bookmarkserver.domain.book.service.BookService;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/book")
+@RequestMapping("/api/v1/books")
 public class BookController {
     private final BookService bookService;
 
@@ -26,7 +23,6 @@ public class BookController {
 
     @PostMapping("/update/{bookId}")
     public BookResponse updateBook(@PathVariable Long bookId, @RequestBody UpdateBookRequest updateBookRequest){
-
         return bookService.updateBook(bookId,updateBookRequest);
     }
 
@@ -50,10 +46,19 @@ public class BookController {
         return bookService.getMyBookList();
     }
 
+
     @GetMapping("/club")
-    public Slice<BookClubInfoDto> bookClubList(@RequestParam Integer page){
+    public List<BookClubInfoDto> bookClubList(@RequestParam Integer page){
         return bookService.bookClubList(page);
     }
+
+
+
+    @PostMapping("/likes/{bookId}")
+    public void saveLikes(@PathVariable Long bookId){
+        bookService.saveLike(bookId);
+    }
+
 
 
 

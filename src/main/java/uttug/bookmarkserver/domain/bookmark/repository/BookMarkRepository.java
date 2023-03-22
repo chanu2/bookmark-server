@@ -16,9 +16,8 @@ public interface BookMarkRepository extends JpaRepository<BookMark,Long> {
 
     @Override
     Optional<BookMark> findById(Long id);
+    Slice<BookMark> findAllById(Long id,PageRequest pageRequest);
 
-
-
-    Slice<BookMark> findById(Long id,PageRequest pageRequest);
+    List<BookMark> findAllByBook(Book book);
 
 }

@@ -28,10 +28,17 @@ public class Likes extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    //== 연관관계 편의 메서드==/
+
 
     @Builder
     public Likes(Book book, User user) {
-        this.book = book;
+
+        if(this.book!=null){
+            this.book.getBookMarks().remove(this);
+        }
+        this.book=book;
+        book.getLikesList().add(this);
         this.user = user;
     }
 }

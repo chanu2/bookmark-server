@@ -8,12 +8,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import uttug.bookmarkserver.domain.book.entity.Book;
+import uttug.bookmarkserver.domain.bookmark.dto.request.CreateBookMarkRequest;
+import uttug.bookmarkserver.domain.bookmark.entity.BookMark;
+import uttug.bookmarkserver.domain.common.Color;
 import uttug.bookmarkserver.domain.common.Gender;
 import uttug.bookmarkserver.domain.user.entity.User;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -115,6 +120,145 @@ class BookRepositoryTest {
 //            System.out.println("book.getAuthor() = " + book.getAuthor());
 //        }
 
+
+
+    }
+
+    @Test
+    public void 책에서_북마크_페이지_가져오기() {
+
+        User user = User.builder()
+                .email("mdsoo55828@gmail.com")
+                .profilePath("https://asdwdsda")
+                .gender(Gender.MAN)
+                .nickname("chanu2")
+                .roles(Collections.singletonList("ROLE_USER"))
+                .build();
+
+        em.persist(user);
+
+        Book book1 = Book.builder()
+                .user(user)
+                .bookName("돈키호테")
+                .author("생땍베르찌")
+                .publisher("유명 출판사")
+                .pageNumber(200)
+                .build();
+
+
+        Book book2 = Book.builder()
+                .user(user)
+                .bookName("돈키호테2")
+                .author("생땍베르찌2")
+                .publisher("유명 출판사2")
+                .pageNumber(300)
+                .build();
+
+
+        em.persist(book1);
+        em.persist(book2);
+
+
+        CreateBookMarkRequest createBookMarkRequest1 = new CreateBookMarkRequest("책갈피1","www.asdwd","3",1233, Color.RED);
+        CreateBookMarkRequest createBookMarkRequest2 = new CreateBookMarkRequest("책갈피2","www.asdwd","3",126,Color.RED);
+        CreateBookMarkRequest createBookMarkRequest3 = new CreateBookMarkRequest("책갈피3","www.asdwd","3",100,Color.RED);
+        CreateBookMarkRequest createBookMarkRequest4 = new CreateBookMarkRequest("책갈피4","www.asdwd","3",133,Color.RED);
+        CreateBookMarkRequest createBookMarkRequest5 = new CreateBookMarkRequest("책갈피5","www.asdwd","3",42,Color.RED);
+
+
+        BookMark bookMark1 = BookMark.builder()
+                .book(book1)
+                .user(user)
+                .bookMarkName(createBookMarkRequest1.getBookMarkName())
+                .moodImageUrl(createBookMarkRequest1.getMoodImageUrl())
+                .summary(createBookMarkRequest1.getSummary())
+                .checkPageNum(createBookMarkRequest1.getCheckPageNum())
+                .color(createBookMarkRequest1.getColor())
+                .build();
+
+
+
+
+        BookMark bookMark2 = BookMark.builder()
+                .book(book1)
+                .user(user)
+                .bookMarkName(createBookMarkRequest2.getBookMarkName())
+                .moodImageUrl(createBookMarkRequest2.getMoodImageUrl())
+                .summary(createBookMarkRequest2.getSummary())
+                .checkPageNum(createBookMarkRequest2.getCheckPageNum())
+                .color(createBookMarkRequest2.getColor())
+                .build();
+
+        BookMark bookMark3 = BookMark.builder()
+                .book(book1)
+                .user(user)
+                .bookMarkName(createBookMarkRequest3.getBookMarkName())
+                .moodImageUrl(createBookMarkRequest3.getMoodImageUrl())
+                .summary(createBookMarkRequest3.getSummary())
+                .checkPageNum(createBookMarkRequest3.getCheckPageNum())
+                .color(createBookMarkRequest3.getColor())
+                .build();
+
+
+        BookMark bookMark4 = BookMark.builder()
+                .book(book1)
+                .user(user)
+                .bookMarkName(createBookMarkRequest4.getBookMarkName())
+                .moodImageUrl(createBookMarkRequest4.getMoodImageUrl())
+                .summary(createBookMarkRequest4.getSummary())
+                .checkPageNum(createBookMarkRequest4.getCheckPageNum())
+                .color(createBookMarkRequest4.getColor())
+                .build();
+
+
+        BookMark bookMark5 = BookMark.builder()
+                .book(book1)
+                .user(user)
+                .bookMarkName(createBookMarkRequest5.getBookMarkName())
+                .moodImageUrl(createBookMarkRequest5.getMoodImageUrl())
+                .summary(createBookMarkRequest5.getSummary())
+                .checkPageNum(createBookMarkRequest5.getCheckPageNum())
+                .color(createBookMarkRequest5.getColor())
+                .build();
+
+
+
+
+        em.persist(bookMark1);
+        em.persist(bookMark2);
+        em.persist(bookMark3);
+        em.persist(bookMark4);
+        em.persist(bookMark5);
+
+
+        em.flush();
+        em.clear();
+
+        List<Book> bookMark = bookRepository.findBookMark(book1.getId());
+        System.out.println("bookMark.size() = " + bookMark.size());
+        System.out.println("bookMark.stream().collect(Collectors.toList()) = " + bookMark.stream().collect(Collectors.toList()));
+
+        List<Integer> data = new ArrayList<>();
+
+
+        for (Book book : bookMark) {
+
+            List<Integer> objects = new ArrayList<>();
+
+            for (BookMark mark : book.getBookMarks()) {
+
+                objects.add(mark.getCheckPageNum());
+                System.out.println("objects.stream().collect(Collectors.toList()) = " + objects.stream().collect(Collectors.toList()));
+            }
+
+            Integer max = Collections.max(objects);
+            System.out.println(max);
+
+            data.add(max);
+
+        }
+
+        System.out.println("data = " + data.stream().collect(Collectors.toList()));
 
 
     }

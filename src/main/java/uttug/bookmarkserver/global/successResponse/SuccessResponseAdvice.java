@@ -13,7 +13,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
-@RestControllerAdvice(basePackages = "gdsc.RunEatServer")
+@RestControllerAdvice(basePackages = "uttug.bookmarkserver")
 public class SuccessResponseAdvice implements ResponseBodyAdvice {
 
     @Override
@@ -57,6 +57,8 @@ public class SuccessResponseAdvice implements ResponseBodyAdvice {
 
         return true;
     }
+
+
 
 
 }

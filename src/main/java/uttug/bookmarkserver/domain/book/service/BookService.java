@@ -3,26 +3,27 @@ package uttug.bookmarkserver.domain.book.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import uttug.bookmarkserver.domain.asset.service.AssetUtils;
 import uttug.bookmarkserver.domain.book.dto.request.CreateBookRequest;
 import uttug.bookmarkserver.domain.book.dto.request.UpdateBookRequest;
-import uttug.bookmarkserver.domain.book.dto.response.BookClubInfoDto;
-import uttug.bookmarkserver.domain.book.dto.response.BookResponse;
-import uttug.bookmarkserver.domain.book.dto.response.MyBookListDto;
+import uttug.bookmarkserver.domain.book.dto.response.*;
 import uttug.bookmarkserver.domain.book.entity.Book;
 import uttug.bookmarkserver.domain.book.exception.BookNotFoundException;
-import uttug.bookmarkserver.domain.book.exception.NotHostException;
 import uttug.bookmarkserver.domain.book.repository.BookRepository;
+import uttug.bookmarkserver.domain.bookmark.entity.BookMark;
+import uttug.bookmarkserver.domain.likes.entity.Likes;
+import uttug.bookmarkserver.domain.likes.repository.LikesRepository;
+import uttug.bookmarkserver.domain.likes.service.LikesUtils;
 import uttug.bookmarkserver.domain.user.entity.User;
 import uttug.bookmarkserver.global.utill.security.SecurityUtils;
 import uttug.bookmarkserver.global.utill.user.UserUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +32,8 @@ public class BookService implements BookUtils {
 
     private final BookRepository bookRepository;
     private final UserUtils userUtils;
+    private final LikesUtils likesUtils;
+    private final LikesRepository likesRepository;
 
 
     // 책 생성
@@ -74,15 +77,35 @@ public class BookService implements BookUtils {
     }
 
 
-
     // 내가 쓴 책 리스트
     public List<MyBookListDto> getMyBookList(){
 
         String currentUserEmail = SecurityUtils.getCurrentUserEmail();
 
-        List<Book> bookList = bookRepository.findBooksByUserEmailOrderByCreatedDateDesc(currentUserEmail);
+        List<Book> bookList = bookRepository.findMyBook(currentUserEmail);
 
-        return bookList.stream().map(b -> new MyBookListDto(b)).collect(Collectors.toList());
+        List<MyBookListDto> myBookListDtos = new ArrayList<>();
+
+
+        for (Book book : bookList) {
+
+            MyBookListDto myBookListDto = new MyBookListDto(book);
+
+            List<Integer> pageNumList = new ArrayList<>();
+
+            for (BookMark bookMark : book.getBookMarks()) {
+
+                pageNumList.add(bookMark.getCheckPageNum());
+
+            }
+
+            Integer maxNowPage = Collections.max(pageNumList);
+            myBookListDto.setNowPageNumber(maxNowPage);
+            myBookListDtos.add(myBookListDto);
+
+        }
+
+        return myBookListDtos;
     }
 
 
@@ -122,24 +145,92 @@ public class BookService implements BookUtils {
     }
 
 
-    // 북클럽 리스트
-    public Slice<BookClubInfoDto> bookClubList(Integer page){
+
+    // 북클럽리스트
+    public List<BookClubInfoDto> bookClubList(Integer page){
 
         PageRequest pageRequest = PageRequest.of(page,2, Sort.Direction.DESC,"likeNumber");
 
-        Slice<Book> bookList = bookRepository.findBy(pageRequest);
+        List<Book> bookList = bookRepository.findAllByRegistrationStatus(pageRequest, true).getContent();
 
-        return bookList.map(b -> new BookClubInfoDto(
-                b.getBookName(),
-                b.getAuthor(),
-                b.getPublisher(),
-                b.getPageNumber(),
-                b.getLikeNumber(),
-                b.getElapsedDay(),
-                b.getUser().getNickname()));
+        String email = SecurityUtils.getCurrentUserEmail();
+
+        List<BookClubInfoDto> objects = new ArrayList<>();
+
+        for (Book book : bookList) {
+
+            Boolean likes = likesUtils.findLikes(book.getId(), email);
+            BookClubInfoDto bookClubInfoDto = new BookClubInfoDto(book);
+
+            if(likes){
+                bookClubInfoDto.setLikeStatus(true);
+            }
+
+            objects.add(bookClubInfoDto);
+
+        }
+
+        return objects;
 
     }
 
+    // 나의 책 요약 페이지 정보
+    public BookSummaryResponse bookSummary(Long bookId){
+
+        String currentUserEmail = SecurityUtils.getCurrentUserEmail();
+
+        Book book = queryBook(bookId);
+
+        book.validUserIsHost(currentUserEmail);
+
+        return new BookSummaryResponse(book);
+    }
+
+
+    // 북마크 요약 페이지 정보
+    public BookClubSummaryResponse bookClubSummary(Long bookId){
+
+        String currentUserEmail = SecurityUtils.getCurrentUserEmail();
+
+        Book book = queryBook(bookId);
+
+        Boolean likes = likesUtils.findLikes(bookId, currentUserEmail);
+
+        return new BookClubSummaryResponse(book,likes);
+    }
+
+
+
+
+    // 책 좋아요
+    @Transactional
+    public Boolean saveLike(Long bookId){
+
+        String findEmail = SecurityUtils.getCurrentUserEmail();
+
+        Optional<Likes> findLike = likesRepository.findByBookIdAndUserEmail(bookId, findEmail);
+
+        User user = userUtils.getUserByEmail(findEmail);
+        Book book = queryBook(bookId);
+
+        if(findLike.isEmpty()){
+
+            Likes like = Likes.builder()
+                    .book(book)
+                    .user(user)
+                    .build();
+
+            likesRepository.save(like);
+            book.addLikeNum();
+
+            return true;
+
+        }else {
+            book.subLikeNum();
+            likesRepository.deleteByBookIdAndUserEmail(bookId,findEmail);
+            return false;
+        }
+    }
 
 
     private Book makeBook(CreateBookRequest createBookRequest,User host){

@@ -11,7 +11,6 @@ public class BookMarkInfoDto {
 
     private String bookMarkName;
     private String moodImageUrl;
-    private String summary;
     private Integer checkPageNum;
     @Enumerated(EnumType.STRING)
     private Color color;
@@ -20,7 +19,6 @@ public class BookMarkInfoDto {
     public BookMarkInfoDto(String bookMarkName, String moodImageUrl, String summary, Integer checkPageNum, Color color) {
         this.bookMarkName = bookMarkName;
         this.moodImageUrl = moodImageUrl;
-        this.summary = summary;
         this.checkPageNum = checkPageNum;
         this.color = color;
     }

@@ -7,7 +7,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uttug.bookmarkserver.domain.user.dto.request.ChangeUserRequest;
 import uttug.bookmarkserver.domain.user.dto.request.LoginDto;
+import uttug.bookmarkserver.domain.user.dto.response.UserProfileResponse;
 import uttug.bookmarkserver.domain.user.entity.RefreshToken;
 import uttug.bookmarkserver.domain.user.entity.User;
 import uttug.bookmarkserver.domain.user.repository.RefreshTokenRepository;
@@ -15,6 +17,8 @@ import uttug.bookmarkserver.domain.user.repository.UserRepository;
 import uttug.bookmarkserver.global.exception.UserExistedException;
 import uttug.bookmarkserver.global.exception.UserNotFoundException;
 import uttug.bookmarkserver.global.security.JwtUtil;
+import uttug.bookmarkserver.global.utill.security.SecurityUtils;
+import uttug.bookmarkserver.global.utill.user.UserUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
@@ -25,12 +29,11 @@ import java.util.Collections;
 @Slf4j
 public class UserService {
 
-    private final AssetUtils assetUtils;
-
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
 
+    private final UserUtils userUtils;
 
 
 
@@ -88,12 +91,30 @@ public class UserService {
 
     }
 
-    public void signIn2 (String email, HttpServletResponse response) {
+    public boolean signIn2 (String email, HttpServletResponse response) {
 
         User user = findMemberEmail(email);
         createToken(email, response);
         log.info(user.getEmail() + " (id : " + user.getId() + ") login");
+
+        return true;
     }
+
+    @Transactional
+    public void changeUserInfo(ChangeUserRequest changeUserRequest) {
+
+        User user = userUtils.getUserByEmail(SecurityUtils.getCurrentUserEmail());
+
+        user.changeUser(changeUserRequest.getNickname(),changeUserRequest.getFilePath());
+
+    }
+
+    public UserProfileResponse getProfile() {
+
+        User user = userUtils.getUserFromSecurityContext();
+        return new UserProfileResponse(user);
+    }
+
 
 
     public void createToken(String email, HttpServletResponse response) {
@@ -120,14 +141,6 @@ public class UserService {
                 .orElseThrow(() -> UserNotFoundException.EXCEPTION);
     }
 
-
-
-    // TODO: 2023-03-04 캐릭터로 변경
-//    public List<User> getTotalRank(){
-//        PageRequest pageRequest = PageRequest.of(0,10, Sort.by(Sort.Direction.DESC,"accumulatedCalorie"));
-//
-//        return userRepository.findBy(pageRequest).getContent();
-//    }
 
 
 }

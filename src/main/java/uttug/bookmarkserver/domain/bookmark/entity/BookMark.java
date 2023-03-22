@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import uttug.bookmarkserver.domain.book.entity.Book;
+import uttug.bookmarkserver.domain.book.exception.NotHostException;
+import uttug.bookmarkserver.domain.book.service.dto.UpdateBookDto;
+import uttug.bookmarkserver.domain.bookmark.service.dto.UpdateBookMarkDto;
 import uttug.bookmarkserver.domain.common.Color;
 import uttug.bookmarkserver.domain.common.Gender;
 import uttug.bookmarkserver.domain.user.entity.User;
@@ -22,9 +25,14 @@ public class BookMark extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "book_mark_id")
     private Long id;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "book_id")
     private Book book;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
     private String bookMarkName;
     private String moodImageUrl;
     private String summary;
@@ -34,20 +42,51 @@ public class BookMark extends BaseEntity {
 
 
     //== 연관 관계 메서드 ==//
-    public void addBook(Book book){
-        book.getBookMarks().add(this);
-    }
+//    public void addBook(Book book){
+//        if(this.book!=null){
+//            this.book.getBookMarks().remove(this);
+//        }
+//        this.book=book;
+//        book.getBookMarks().add(this);
+//    }
 
-
-    // enum
 
     @Builder
-    public BookMark(Book book, String bookMarkName, String moodImageUrl, String summary, Integer checkPageNum, Color color) {
-        this.book = book;
+    public BookMark(Book book,User user, String bookMarkName, String moodImageUrl, String summary, Integer checkPageNum, Color color) {
+
+        if(this.book!=null){
+            this.book.getBookMarks().remove(this);
+        }
+        this.book=book;
+        book.getBookMarks().add(this);
+        this.user = user;
         this.bookMarkName = bookMarkName;
         this.moodImageUrl = moodImageUrl;
         this.summary = summary;
         this.checkPageNum = checkPageNum;
         this.color = color;
+
+    }
+
+    public void validUserIsHost(String email) {
+        if (!checkUserIsHost(email)) {
+            throw NotHostException.EXCEPTION;
+        }
+    }
+
+    public void subBookmark(Book book){
+        book.getBookMarks().remove(this);
+    }
+
+    public Boolean checkUserIsHost(String email) {
+        return user.getEmail().equals(email);
+    }
+
+    public void updateBook(UpdateBookMarkDto updateBookMarkDto) {
+        this.bookMarkName = updateBookMarkDto.getBookMarkName();
+        this.moodImageUrl = updateBookMarkDto.getMoodImageUrl();
+        this.summary = updateBookMarkDto.getSummary();
+        this.checkPageNum = updateBookMarkDto.getCheckPageNum();
+        this.color = updateBookMarkDto.getColor();
     }
 }

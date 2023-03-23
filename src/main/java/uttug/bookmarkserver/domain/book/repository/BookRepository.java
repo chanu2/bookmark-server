@@ -25,10 +25,9 @@ public interface BookRepository extends JpaRepository<Book,Long> {
     Slice<Book> findAllByRegistrationStatus(PageRequest pageRequest,Boolean status);
 
     @Query("select distinct b from Book b"+
+            " join fetch b.user u"+
             " join fetch b.bookMarks bs"+
-            " where b.user.email = :email order by b.createdDate DESC ")
+            " where u.email = :email")
     List<Book> findMyBook(@Param("email") String email);
-
-
 
 }

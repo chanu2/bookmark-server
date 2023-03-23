@@ -6,10 +6,8 @@ import uttug.bookmarkserver.domain.common.Gender;
 
 @Getter
 public class LoginDto {
-
     private String nickname;
-
+    private String profilePath;
     private Gender gender;
-
 
 }

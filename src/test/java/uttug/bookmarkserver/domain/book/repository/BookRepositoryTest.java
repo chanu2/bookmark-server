@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+import uttug.bookmarkserver.domain.book.dto.response.MyBookListDto;
 import uttug.bookmarkserver.domain.book.entity.Book;
 import uttug.bookmarkserver.domain.bookmark.dto.request.CreateBookMarkRequest;
 import uttug.bookmarkserver.domain.bookmark.entity.BookMark;
@@ -137,6 +138,7 @@ class BookRepositoryTest {
 
         em.persist(user);
 
+
         Book book1 = Book.builder()
                 .user(user)
                 .bookName("돈키호테")
@@ -190,7 +192,7 @@ class BookRepositoryTest {
                 .build();
 
         BookMark bookMark3 = BookMark.builder()
-                .book(book1)
+                .book(book2)
                 .user(user)
                 .bookMarkName(createBookMarkRequest3.getBookMarkName())
                 .moodImageUrl(createBookMarkRequest3.getMoodImageUrl())
@@ -234,31 +236,37 @@ class BookRepositoryTest {
         em.flush();
         em.clear();
 
-        List<Book> bookMark = bookRepository.findBookMark(book1.getId());
-        System.out.println("bookMark.size() = " + bookMark.size());
-        System.out.println("bookMark.stream().collect(Collectors.toList()) = " + bookMark.stream().collect(Collectors.toList()));
+        List<Book> bookList = bookRepository.findMyBook("mdsoo55828@gmail.com");
+        System.out.println("----------------------------------");
+        System.out.println("bookList.size() = " + bookList.size());
+        System.out.println("bookList.stream().collect(Collectors.toList()) = " + bookList.stream().collect(Collectors.toList()));
 
-        List<Integer> data = new ArrayList<>();
+        List<MyBookListDto> myBookListDtos = new ArrayList<>();
 
+        for (Book book : bookList) {
 
-        for (Book book : bookMark) {
+            MyBookListDto myBookListDto = new MyBookListDto(book);
 
-            List<Integer> objects = new ArrayList<>();
+            List<Integer> pageNumList = new ArrayList<>();
 
-            for (BookMark mark : book.getBookMarks()) {
+            for (BookMark bookMarkList : book.getBookMarks()) {
 
-                objects.add(mark.getCheckPageNum());
-                System.out.println("objects.stream().collect(Collectors.toList()) = " + objects.stream().collect(Collectors.toList()));
+                pageNumList.add(bookMarkList.getCheckPageNum());
+
             }
 
-            Integer max = Collections.max(objects);
-            System.out.println(max);
-
-            data.add(max);
+            Integer maxNowPage = Collections.max(pageNumList);
+            myBookListDto.setNowPageNumber(maxNowPage);
+            myBookListDtos.add(myBookListDto);
 
         }
 
-        System.out.println("data = " + data.stream().collect(Collectors.toList()));
+        for (MyBookListDto myBookListDto : myBookListDtos) {
+            System.out.println("myBookListDto.getBookName() = " + myBookListDto.getBookName());
+            System.out.println("myBookListDto.getNowPageNumber() = " + myBookListDto.getNowPageNumber());
+            System.out.println("myBookListDto.getNowPageNumber() = " + myBookListDto.getNowPageNumber());
+        }
+        
 
 
     }

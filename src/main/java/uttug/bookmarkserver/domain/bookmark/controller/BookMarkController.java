@@ -22,7 +22,7 @@ public class BookMarkController {
         return bookMarkService.createBookMark(bookId,createBookMarkRequest);
     }
 
-    @PostMapping("/delete/{bookMarkId}")
+    @DeleteMapping("/delete/{bookMarkId}")
     public void deleteBookMark(@PathVariable Long bookMarkId){
         bookMarkService.deleteBookMark(bookMarkId);
     }
@@ -38,8 +38,8 @@ public class BookMarkController {
         return bookMarkService.bookMarkList(bookId,page);
     }
 
-    @GetMapping("/Info/{bookMarkId}")
-    public BookMarkResponse bookMarkListInfo(@PathVariable Long bookMarkId){
+    @GetMapping("/detail/{bookMarkId}")
+    public BookMarkResponse bookMarkDetail(@PathVariable Long bookMarkId){
 
         return bookMarkService.bookMarkDetail(bookMarkId);
     }

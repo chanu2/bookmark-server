@@ -34,14 +34,12 @@ public class WebSecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 토큰 기반 인증이므로 세션 X
                 .and()
                 .authorizeRequests()
-                .antMatchers("/test/fcm/**", "/user/checkUnique",
-                        "/user/signUp",
-                        "/user/signUp2",
-                        "/user/signIn2",
-                        "/user/asd",
-                        "/user/signIn").permitAll()
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/guest/**").hasRole("GUEST")
+                .antMatchers("/api/v1/user/signUp",
+                        "/api/v1/user/signUp2",
+                        "/api/v1/user/signIn2",
+                        "/api/v1/user/signIn").permitAll()
+//                .antMatchers("/admin/**").hasRole("ADMIN")
+//                .antMatchers("/guest/**").hasRole("GUEST")
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()

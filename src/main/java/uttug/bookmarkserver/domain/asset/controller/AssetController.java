@@ -20,7 +20,7 @@ public class AssetController {
 
     private final AssetService assetService;
 
-    @GetMapping("/profiles/random")
+    @GetMapping("/profile/random")
     public ProfileImageDto getRandomProfileImageUrl() {
         return assetService.randomProfileImageUrl();
     }

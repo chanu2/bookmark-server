@@ -25,7 +25,7 @@ public class UserController {
     private final TokenVerifier tokenVerifier;
 
 
-    // 회원가입 요청
+    // 로그인
     @PostMapping("/signIn")
     public void signIn(@RequestParam String idTokenString,HttpServletResponse response) throws GeneralSecurityException, IOException {
 
@@ -33,7 +33,7 @@ public class UserController {
         userService.signIn(email, response);
     }
 
-    // 로그인
+    // 회원가입
     @PostMapping("/signUp")
     public void signUp(@RequestParam String idTokenString, @RequestBody LoginDto loginDto, HttpServletResponse response) throws GeneralSecurityException, IOException {
 
@@ -54,12 +54,10 @@ public class UserController {
         return userService.signIn2(email, response);
     }
 
-
-    @PutMapping("/change")
+    @PostMapping("/change")
     public void changeNickname(@RequestBody ChangeUserRequest changeUserRequest) {
         userService.changeUserInfo(changeUserRequest);
     }
-
 
     @GetMapping("/profile")
     public UserProfileResponse getProfile() {

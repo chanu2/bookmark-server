@@ -26,7 +26,7 @@ public class BookController {
         return bookService.updateBook(bookId,updateBookRequest);
     }
 
-    @PostMapping("/delete/{bookId}")
+    @DeleteMapping("/delete/{bookId}")
     public void deleteBook(@PathVariable Long bookId){
         bookService.deleteBook(bookId);
     }
@@ -46,13 +46,15 @@ public class BookController {
         return bookService.getMyBookList();
     }
 
-
     @GetMapping("/club")
     public List<BookClubInfoDto> bookClubList(@RequestParam Integer page){
         return bookService.bookClubList(page);
     }
 
-
+    @GetMapping("/club/summary/{bookId}")
+    public BookClubSummaryResponse bookClubSummary( @PathVariable Long bookId){
+        return bookService.bookClubSummary(bookId);
+    }
 
     @PostMapping("/likes/{bookId}")
     public void saveLikes(@PathVariable Long bookId){
@@ -60,6 +62,16 @@ public class BookController {
     }
 
 
+    @GetMapping("/summary/{bookId}")
+    public BookSummaryResponse bookSummary( @PathVariable Long bookId){
+        return bookService.bookSummary(bookId);
+    }
 
+    // ==// test
+
+    @GetMapping("/test")
+    public List<BookQueryDto> test1(){
+        return bookService.test();
+    }
 
 }

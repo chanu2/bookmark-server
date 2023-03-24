@@ -11,6 +11,7 @@ import uttug.bookmarkserver.domain.book.dto.request.UpdateBookRequest;
 import uttug.bookmarkserver.domain.book.dto.response.*;
 import uttug.bookmarkserver.domain.book.entity.Book;
 import uttug.bookmarkserver.domain.book.exception.BookNotFoundException;
+import uttug.bookmarkserver.domain.book.repository.BookQueryRepository;
 import uttug.bookmarkserver.domain.book.repository.BookRepository;
 import uttug.bookmarkserver.domain.bookmark.entity.BookMark;
 import uttug.bookmarkserver.domain.likes.entity.Likes;
@@ -34,6 +35,7 @@ public class BookService implements BookUtils {
     private final UserUtils userUtils;
     private final LikesUtils likesUtils;
     private final LikesRepository likesRepository;
+    private final BookQueryRepository bookQueryRepository;
 
 
     // 책 생성
@@ -83,6 +85,7 @@ public class BookService implements BookUtils {
         String currentUserEmail = SecurityUtils.getCurrentUserEmail();
 
         List<Book> bookList = bookRepository.findMyBook(currentUserEmail);
+
 
         List<MyBookListDto> myBookListDtos = new ArrayList<>();
 
@@ -149,7 +152,7 @@ public class BookService implements BookUtils {
     // 북클럽리스트
     public List<BookClubInfoDto> bookClubList(Integer page){
 
-        PageRequest pageRequest = PageRequest.of(page,2, Sort.Direction.DESC,"likeNumber");
+        PageRequest pageRequest = PageRequest.of(page,3, Sort.Direction.DESC,"likeNumber");
 
         List<Book> bookList = bookRepository.findAllByRegistrationStatus(pageRequest, true).getContent();
 
@@ -253,5 +256,10 @@ public class BookService implements BookUtils {
                 .orElseThrow(() -> BookNotFoundException.EXCEPTION);
     }
 
+
+    public List<BookQueryDto> test(){
+        String currentUserEmail = SecurityUtils.getCurrentUserEmail();
+        return bookQueryRepository.findBook_optimization(currentUserEmail);
+    }
 
 }

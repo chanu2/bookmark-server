@@ -15,6 +15,7 @@ import uttug.bookmarkserver.domain.bookmark.dto.request.UpdateBookMarkRequest;
 import uttug.bookmarkserver.domain.bookmark.dto.response.BookMarkInfoDto;
 import uttug.bookmarkserver.domain.bookmark.dto.response.BookMarkResponse;
 import uttug.bookmarkserver.domain.bookmark.entity.BookMark;
+import uttug.bookmarkserver.domain.bookmark.exception.BookMarkNotFoundException;
 import uttug.bookmarkserver.domain.bookmark.repository.BookMarkRepository;
 
 import uttug.bookmarkserver.domain.user.entity.User;
@@ -47,7 +48,7 @@ public class BookMarkService extends BaseEntity {
 
         BookMark bookMark = makeBookMark(createBookMarkRequest, book, user);
 
-        book.updateNowBookPage(bookMark.getCheckPageNum());
+        bookMark.checkOutOfPage();
 
         bookMarkRepository.save(bookMark);
 
@@ -83,6 +84,8 @@ public class BookMarkService extends BaseEntity {
         bookMark.validUserIsHost(currentUserEmail);
 
         bookMark.updateBook(updateBookMarkRequest.toUpdateBookMarkDto());
+
+        bookMark.checkOutOfPage();
 
         return new BookMarkResponse(bookMark);
 
@@ -144,7 +147,7 @@ public class BookMarkService extends BaseEntity {
     public BookMark queryBookMark(Long bookMarkId) {
         return bookMarkRepository
                 .findById(bookMarkId)
-                .orElseThrow(() -> BookNotFoundException.EXCEPTION);
+                .orElseThrow(() -> BookMarkNotFoundException.EXCEPTION);
     }
 
 

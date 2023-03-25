@@ -18,6 +18,8 @@ public enum ErrorCode {
     DUPLICATE_LOGIN(404, "해당 아이디는 이미 존재합니다."),
     RESERVATION_NOT_FOUND(404, "해당하는 정보의 방을 찾을 수 없습니다."),
     BOOK_NOT_HOST(400,  "책의 주인이 아닙니다"),
+    BOOK_MARK_NOT_HOST(400,  "책 갈피 주인이 아닙니다"),
+    OUT_OF_PAGE(400,  "책 페이지 범위를 초과했습니다E"),
     PARTICIPATION_NOT_FOUND(404, "참여하지 않은 방입니다."),
 
     /* 409 : CONFLICT : Resource의 현재 상태와 충돌. 보통 중복된 데이터 존재 */
@@ -40,10 +42,10 @@ public enum ErrorCode {
     MOOD_IMAGE_NOT_FOUND(404,  "Mood Not Found"),
     COLOR_IMAGE_NOT_FOUND(404,  "COLOR Not Found"),
     BOOK_NOT_FOUND(404,  "BOOK Not Found"),
+    BOOK_MARK_NOT_FOUND(404,  "BOOKMARK Not Found"),
     BAD_FILE_EXTENSION(404,  "FILE extension error"),
     FILE_EMPTY(404,  "FILE empty"),
     FILE_UPLOAD_FAIL(404,  "FILE upload fail"),
-    BOOK_MARK_NOT_FOUND(404,  "BOOKMARK Not Found"),
     CHARACTER_NOT_FOUND(404,  "Character Not Found"),
     INTERNAL_SERVER_ERROR(500,"서버 에러")
     ;

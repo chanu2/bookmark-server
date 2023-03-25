@@ -5,8 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import uttug.bookmarkserver.domain.book.entity.Book;
-import uttug.bookmarkserver.domain.book.exception.NotHostException;
 import uttug.bookmarkserver.domain.book.service.dto.UpdateBookDto;
+import uttug.bookmarkserver.domain.bookmark.exception.NotHostException;
+import uttug.bookmarkserver.domain.bookmark.exception.OutOfPageException;
 import uttug.bookmarkserver.domain.bookmark.service.dto.UpdateBookMarkDto;
 import uttug.bookmarkserver.domain.common.Color;
 import uttug.bookmarkserver.domain.common.Gender;
@@ -40,17 +41,6 @@ public class BookMark extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Color color;
 
-
-    //== 연관 관계 메서드 ==//
-//    public void addBook(Book book){
-//        if(this.book!=null){
-//            this.book.getBookMarks().remove(this);
-//        }
-//        this.book=book;
-//        book.getBookMarks().add(this);
-//    }
-
-
     @Builder
     public BookMark(Book book,User user, String bookMarkName, String moodImageUrl, String summary, Integer checkPageNum, Color color) {
 
@@ -74,12 +64,18 @@ public class BookMark extends BaseEntity {
         }
     }
 
+    public Boolean checkUserIsHost(String email) {
+        return user.getEmail().equals(email);
+    }
+
     public void subBookmark(Book book){
         book.getBookMarks().remove(this);
     }
 
-    public Boolean checkUserIsHost(String email) {
-        return user.getEmail().equals(email);
+    public void checkOutOfPage(){
+        if(this.book.getPageNumber()<checkPageNum){
+            throw OutOfPageException.EXCEPTION;
+        }
     }
 
     public void updateBook(UpdateBookMarkDto updateBookMarkDto) {

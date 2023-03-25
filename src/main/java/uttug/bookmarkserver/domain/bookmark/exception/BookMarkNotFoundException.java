@@ -9,6 +9,6 @@ public class BookMarkNotFoundException extends BookMarkException {
     public static final BookMarkException EXCEPTION = new BookMarkNotFoundException();
 
     private BookMarkNotFoundException() {
-        super(ErrorCode.BOOK_NOT_FOUND);
+        super(ErrorCode.BOOK_MARK_NOT_FOUND);
     }
 }

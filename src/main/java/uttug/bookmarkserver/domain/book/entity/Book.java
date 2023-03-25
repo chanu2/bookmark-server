@@ -52,7 +52,6 @@ public class Book extends BaseEntity {
     private Integer elapsedDay;
     private boolean registrationStatus;
 
-    private Integer nowBookPage;
 
 
 
@@ -70,7 +69,7 @@ public class Book extends BaseEntity {
         this.likeNumber = 0;
         this.elapsedDay = 1;
         this.registrationStatus = false;
-        this.nowBookPage = 0;
+
     }
 
     public void validUserIsHost(String email) {
@@ -106,8 +105,6 @@ public class Book extends BaseEntity {
         this.registrationStatus = false;
     }
 
-    public void updateNowBookPage(Integer checkPageNum){
-        this.nowBookPage = checkPageNum;
-    }
+
 
 }

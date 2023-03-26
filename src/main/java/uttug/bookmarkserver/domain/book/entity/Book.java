@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import uttug.bookmarkserver.domain.book.exception.NotHostException;
 import uttug.bookmarkserver.domain.book.service.dto.UpdateBookDto;
 import uttug.bookmarkserver.domain.bookmark.entity.BookMark;
@@ -24,6 +25,7 @@ import static javax.persistence.FetchType.LAZY;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Slf4j
 public class Book extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +40,6 @@ public class Book extends BaseEntity {
     @OneToMany(mappedBy = "book",cascade = CascadeType.ALL)
     private List<Likes> likesList = new ArrayList<>();
 
-
     private String bookName;
 
     private String author;
@@ -52,6 +53,7 @@ public class Book extends BaseEntity {
     private Integer elapsedDay;
     private boolean registrationStatus;
 
+    private boolean completedStatus;
 
 
 
@@ -69,6 +71,7 @@ public class Book extends BaseEntity {
         this.likeNumber = 0;
         this.elapsedDay = 1;
         this.registrationStatus = false;
+        this.completedStatus = false;
 
     }
 
@@ -77,6 +80,7 @@ public class Book extends BaseEntity {
             throw NotHostException.EXCEPTION;
         }
     }
+
 
     public Boolean checkUserIsHost(String email) {
         return user.getEmail().equals(email);
@@ -98,12 +102,15 @@ public class Book extends BaseEntity {
 
     public void addElapsedDay(){ elapsedDay+=1; }
 
-    public void postBook(){
-        this.registrationStatus = true;
+    public void postBook(){this.registrationStatus = true;
     }
     public void deletePostBook(){
         this.registrationStatus = false;
     }
+
+    public void completeBook(){
+        log.info("이로직을 왜 안타지?");
+        this.completedStatus = true; }
 
 
 

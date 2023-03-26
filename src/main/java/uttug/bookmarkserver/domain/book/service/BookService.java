@@ -120,7 +120,6 @@ public class BookService implements BookUtils {
 
     }
 
-
     // 자랑하기
     @Transactional
     public void postBook(Long bookId){
@@ -178,29 +177,29 @@ public class BookService implements BookUtils {
     }
 
     // 나의 책 요약 페이지 정보
-    public BookSummaryResponse bookSummary(Long bookId){
-
-        String currentUserEmail = SecurityUtils.getCurrentUserEmail();
-
-        Book book = queryBook(bookId);
-
-        book.validUserIsHost(currentUserEmail);
-
-        return new BookSummaryResponse(book);
-    }
+//    public BookSummaryResponse bookSummary1(Long bookId){
+//
+//        String currentUserEmail = SecurityUtils.getCurrentUserEmail();
+//
+//        Book book = queryBook(bookId);
+//
+//        book.validUserIsHost(currentUserEmail);
+//
+//        return new BookSummaryResponse(book);
+//    }
 
 
     // 북마크 요약 페이지 정보
-    public BookClubSummaryResponse bookClubSummary(Long bookId){
-
-        String currentUserEmail = SecurityUtils.getCurrentUserEmail();
-
-        Book book = queryBook(bookId);
-
-        Boolean likes = likesUtils.findLikes(bookId, currentUserEmail);
-
-        return new BookClubSummaryResponse(book,likes);
-    }
+//    public BookClubSummaryResponse bookClubSummary(Long bookId){
+//
+//        String currentUserEmail = SecurityUtils.getCurrentUserEmail();
+//
+//        Book book = queryBook(bookId);
+//
+//        Boolean likes = likesUtils.findLikes(bookId, currentUserEmail);
+//
+//        return new BookClubSummaryResponse(book,likes);
+//    }
 
 
 
@@ -256,10 +255,34 @@ public class BookService implements BookUtils {
                 .orElseThrow(() -> BookNotFoundException.EXCEPTION);
     }
 
-
-    public List<BookQueryDto> test(){
+    //
+    public List<BookDetailResponse> myBookList(){
         String currentUserEmail = SecurityUtils.getCurrentUserEmail();
-        return bookQueryRepository.findBook_optimization(currentUserEmail);
+        return bookQueryRepository.findMyBookList(currentUserEmail);
+    }
+
+    public BookDetailResponse bookSummary(Long bookId){
+
+        String currentUserEmail = SecurityUtils.getCurrentUserEmail();
+
+        Book book = queryBook(bookId);
+
+        book.validUserIsHost(currentUserEmail);
+
+        return bookQueryRepository.findSummaryBook(book);
+    }
+
+    //북마크 클럽 페이지
+    public BookClubSummaryResponse bookClubSummary(Long bookId){
+
+    String currentUserEmail = SecurityUtils.getCurrentUserEmail();
+
+    Book book = queryBook(bookId);
+
+    Boolean like = likesUtils.findLikes(bookId, currentUserEmail);
+
+    return bookQueryRepository.findSummaryBookClub(book,like);
+
     }
 
 }

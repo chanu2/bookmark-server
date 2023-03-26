@@ -62,16 +62,24 @@ public class BookController {
     }
 
 
-    @GetMapping("/summary/{bookId}")
-    public BookSummaryResponse bookSummary( @PathVariable Long bookId){
-        return bookService.bookSummary(bookId);
-    }
+//    @GetMapping("/summary/{bookId}")
+//    public BookSummaryResponse bookSummary( @PathVariable Long bookId){
+//        return bookService.bookSummary(bookId);
+//    }
 
     // ==// test
 
+
+    // 나의 책 리스트 보여주기
     @GetMapping("/test")
-    public List<BookQueryDto> test1(){
-        return bookService.test();
+    public List<BookDetailResponse> test1(){
+        return bookService.myBookList();
     }
+    @GetMapping("/test/summary/{bookId}")
+    public BookDetailResponse test2(@PathVariable Long bookId){
+        return bookService.bookSummary(bookId);
+    }
+
+
 
 }

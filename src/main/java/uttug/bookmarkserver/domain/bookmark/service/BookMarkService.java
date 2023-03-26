@@ -50,6 +50,8 @@ public class BookMarkService extends BaseEntity {
 
         bookMark.checkOutOfPage();
 
+        bookMark.CheckComplete();
+
         bookMarkRepository.save(bookMark);
 
         return new BookMarkResponse(bookMark);
@@ -86,6 +88,8 @@ public class BookMarkService extends BaseEntity {
         bookMark.updateBook(updateBookMarkRequest.toUpdateBookMarkDto());
 
         bookMark.checkOutOfPage();
+
+        bookMark.CheckComplete();
 
         return new BookMarkResponse(bookMark);
 

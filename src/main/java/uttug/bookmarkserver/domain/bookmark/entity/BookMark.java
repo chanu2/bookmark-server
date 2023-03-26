@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import uttug.bookmarkserver.domain.book.entity.Book;
 import uttug.bookmarkserver.domain.book.service.dto.UpdateBookDto;
 import uttug.bookmarkserver.domain.bookmark.exception.NotHostException;
@@ -21,6 +22,7 @@ import static javax.persistence.FetchType.LAZY;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Slf4j
 public class BookMark extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +42,7 @@ public class BookMark extends BaseEntity {
     private Integer checkPageNum;
     @Enumerated(EnumType.STRING)
     private Color color;
+
 
     @Builder
     public BookMark(Book book,User user, String bookMarkName, String moodImageUrl, String summary, Integer checkPageNum, Color color) {
@@ -64,6 +67,24 @@ public class BookMark extends BaseEntity {
         }
     }
 
+    public void checkOutOfPage(){
+        if(this.book.getPageNumber()<checkPageNum){
+            throw OutOfPageException.EXCEPTION;
+        }
+    }
+
+    public void CheckComplete(){
+        log.info("이거는 타나");
+        log.info("책 페이지={}",book.getPageNumber());
+        log.info("책갈피 페이지={}",checkPageNum);
+
+        if(book.getPageNumber().equals(checkPageNum)){
+            log.info("이거는 타나");
+            book.completeBook();
+        }
+    }
+
+
     public Boolean checkUserIsHost(String email) {
         return user.getEmail().equals(email);
     }
@@ -72,11 +93,7 @@ public class BookMark extends BaseEntity {
         book.getBookMarks().remove(this);
     }
 
-    public void checkOutOfPage(){
-        if(this.book.getPageNumber()<checkPageNum){
-            throw OutOfPageException.EXCEPTION;
-        }
-    }
+
 
     public void updateBook(UpdateBookMarkDto updateBookMarkDto) {
         this.bookMarkName = updateBookMarkDto.getBookMarkName();

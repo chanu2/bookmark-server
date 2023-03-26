@@ -10,7 +10,6 @@ import java.util.Optional;
 
 public interface MoodImageRepository extends JpaRepository<MoodImage,Long > {
 
-
     @Override
     List<MoodImage> findAll();
 

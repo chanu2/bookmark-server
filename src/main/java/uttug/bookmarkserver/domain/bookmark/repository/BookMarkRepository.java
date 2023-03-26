@@ -4,6 +4,7 @@ package uttug.bookmarkserver.domain.bookmark.repository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.transaction.annotation.Transactional;
 import uttug.bookmarkserver.domain.book.entity.Book;
 import uttug.bookmarkserver.domain.bookmark.entity.BookMark;
 

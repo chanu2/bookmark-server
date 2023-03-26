@@ -10,6 +10,6 @@ public class NotHostException extends BookMarkException {
     public static final BookMarkException EXCEPTION = new NotHostException();
 
     private NotHostException() {
-        super(ErrorCode.BOOK_NOT_HOST);
+        super(ErrorCode.BOOK_MARK_NOT_HOST);
     }
 }

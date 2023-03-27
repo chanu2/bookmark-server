@@ -6,12 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import uttug.bookmarkserver.domain.book.entity.Book;
-import uttug.bookmarkserver.domain.book.service.dto.UpdateBookDto;
 import uttug.bookmarkserver.domain.bookmark.exception.NotHostException;
 import uttug.bookmarkserver.domain.bookmark.exception.OutOfPageException;
 import uttug.bookmarkserver.domain.bookmark.service.dto.UpdateBookMarkDto;
 import uttug.bookmarkserver.domain.common.Color;
-import uttug.bookmarkserver.domain.common.Gender;
 import uttug.bookmarkserver.domain.user.entity.User;
 import uttug.bookmarkserver.global.database.BaseEntity;
 

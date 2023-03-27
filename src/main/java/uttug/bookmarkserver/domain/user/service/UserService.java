@@ -56,7 +56,6 @@ public class UserService {
                         .email(email)
                         .nickname(loginDto.getNickname())
                         .profilePath(loginDto.getProfilePath())
-                        .gender(loginDto.getGender())
                         .roles(Collections.singletonList("ROLE_USER"))
                         .build());
 
@@ -80,7 +79,6 @@ public class UserService {
                         .email(email)
                         .nickname(loginDto.getNickname())
                         .profilePath(loginDto.getProfilePath())
-                        .gender(loginDto.getGender())
                         .roles(Collections.singletonList("ROLE_USER"))
                         .build());
 

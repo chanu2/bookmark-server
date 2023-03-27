@@ -4,9 +4,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
-import uttug.bookmarkserver.domain.book.entity.Book;
-import uttug.bookmarkserver.domain.common.Gender;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -26,8 +23,6 @@ public class User {
     @Column(nullable = false, length =50, unique = true)
     private String email;
     private String profilePath;
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
 
     private String nickname;
 
@@ -39,10 +34,9 @@ public class User {
 
 
     @Builder
-    public User(String email,String profilePath, Gender gender, String nickname,List<String> roles) {
+    public User(String email,String profilePath, String nickname,List<String> roles) {
         this.email = email;
         this.profilePath = profilePath;
-        this.gender = gender;
         this.nickname = nickname;
         this.roles = roles;
     }

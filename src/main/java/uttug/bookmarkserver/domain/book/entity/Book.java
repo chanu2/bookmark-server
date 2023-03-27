@@ -52,14 +52,11 @@ public class Book extends BaseEntity {
 
     private Integer elapsedDay;
     private boolean registrationStatus;
-
     private boolean completedStatus;
 
 
 
     //== 연관관계 메서드==//
-
-
 
     @Builder
     public Book(User user, String bookName, String author, String publisher,Integer pageNumber) {

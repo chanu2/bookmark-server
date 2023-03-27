@@ -41,9 +41,15 @@ public class BookController {
         bookService.deletePostBook(bookId);
     }
 
+    // 나의 책 리스트 보여주기
     @GetMapping("/my")
-    public List<MyBookListDto> myBookList(){
-        return bookService.getMyBookList();
+    public List<BookDetailResponse> myBookList(){
+        return bookService.myBookList();
+    }
+
+    @GetMapping("/summary/{bookId}")
+    public BookDetailResponse bookSummary(@PathVariable Long bookId){
+        return bookService.bookSummary(bookId);
     }
 
     @GetMapping("/club")
@@ -51,10 +57,12 @@ public class BookController {
         return bookService.bookClubList(page);
     }
 
+
     @GetMapping("/club/summary/{bookId}")
     public BookClubSummaryResponse bookClubSummary( @PathVariable Long bookId){
         return bookService.bookClubSummary(bookId);
     }
+
 
     @PostMapping("/likes/{bookId}")
     public void saveLikes(@PathVariable Long bookId){
@@ -67,18 +75,6 @@ public class BookController {
 //        return bookService.bookSummary(bookId);
 //    }
 
-    // ==// test
-
-
-    // 나의 책 리스트 보여주기
-    @GetMapping("/test")
-    public List<BookDetailResponse> test1(){
-        return bookService.myBookList();
-    }
-    @GetMapping("/test/summary/{bookId}")
-    public BookDetailResponse test2(@PathVariable Long bookId){
-        return bookService.bookSummary(bookId);
-    }
 
 
 

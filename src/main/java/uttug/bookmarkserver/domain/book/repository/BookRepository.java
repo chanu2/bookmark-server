@@ -18,16 +18,18 @@ public interface BookRepository extends JpaRepository<Book,Long> {
     @Override
     Optional<Book> findById(Long id);
 
-    List<Book> findBooksByUserEmailOrderByCreatedDateDesc(String email);
-    List<Book> findBooksByUserEmailOrderByCreatedDateAsc(String email);
+//    List<Book> findBooksByUserEmailOrderByCreatedDateDesc(String email);
+
+    @Query("select b from Book b"+
+            " join fetch b.user u"+
+            " where u.email = :email order by b.createdDate asc")
+    List<Book> findHomeBookList(@Param("email") String userUid);
+
+
+    //List<Book> findBooksByUserEmailOrderByCreatedDateAsc(String email);
 
     Slice<Book> findBy(PageRequest pageRequest);
     Slice<Book> findAllByRegistrationStatus(PageRequest pageRequest,Boolean status);
 
-    @Query("select distinct b from Book b"+
-            " join fetch b.user u"+
-            " join fetch b.bookMarks bs"+
-            " where u.email = :email")
-    List<Book> findMyBook(@Param("email") String email);
 
 }

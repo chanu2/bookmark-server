@@ -50,6 +50,7 @@ public class TokenVerifier {
             log.info("email={}", email);
             log.info("name={}", name);
             log.info("pictureUrl={}", pictureUrl);
+
             return email;
         }
         else {

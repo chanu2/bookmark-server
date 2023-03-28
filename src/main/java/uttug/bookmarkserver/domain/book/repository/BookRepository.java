@@ -18,7 +18,6 @@ public interface BookRepository extends JpaRepository<Book,Long> {
     @Override
     Optional<Book> findById(Long id);
 
-//    List<Book> findBooksByUserEmailOrderByCreatedDateDesc(String email);
 
     @Query("select b from Book b"+
             " join fetch b.user u"+
@@ -26,10 +25,10 @@ public interface BookRepository extends JpaRepository<Book,Long> {
     List<Book> findHomeBookList(@Param("email") String userUid);
 
 
-    //List<Book> findBooksByUserEmailOrderByCreatedDateAsc(String email);
-
     Slice<Book> findBy(PageRequest pageRequest);
     Slice<Book> findAllByRegistrationStatus(PageRequest pageRequest,Boolean status);
+
+    List<Book> findAllByCompletedStatus(Boolean status);
 
 
 }

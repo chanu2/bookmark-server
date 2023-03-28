@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uttug.bookmarkserver.domain.user.dto.request.ChangeUserRequest;
 import uttug.bookmarkserver.domain.user.dto.request.LoginDto;
+import uttug.bookmarkserver.domain.user.dto.response.ConnectUserResponse;
 import uttug.bookmarkserver.domain.user.dto.response.UserProfileResponse;
 import uttug.bookmarkserver.domain.user.entity.RefreshToken;
 import uttug.bookmarkserver.domain.user.entity.User;
+import uttug.bookmarkserver.domain.user.exception.RefreshTokenNotExistException;
 import uttug.bookmarkserver.domain.user.repository.RefreshTokenRepository;
 import uttug.bookmarkserver.domain.user.repository.UserRepository;
 import uttug.bookmarkserver.global.exception.UserExistedException;
@@ -32,20 +34,20 @@ public class UserService {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
-
     private final UserUtils userUtils;
 
 
-
-    public void signIn (String email, HttpServletResponse response) {
+    public ConnectUserResponse signIn (String email, HttpServletResponse response) {
 
         User user = findMemberEmail(email);
         createToken(email, response);
         log.info(user.getEmail() + " (id : " + user.getId() + ") login");
+
+        return new ConnectUserResponse();
     }
 
     @Transactional
-    public void signUp (String email, LoginDto loginDto, HttpServletResponse response) {
+    public ConnectUserResponse signUp (String email, LoginDto loginDto, HttpServletResponse response) {
 
         if(!userRepository.findByEmail(email).isEmpty()) {
            throw UserExistedException.EXCEPTION;
@@ -65,10 +67,12 @@ public class UserService {
         createToken(email, response);
         log.info(user.getEmail() + " (id : " + user.getId() + ") login");
 
+        return new ConnectUserResponse();
+
     }
 
     @Transactional
-    public boolean signUp2 (String email,LoginDto loginDto, HttpServletResponse response) {
+    public ConnectUserResponse signUp2 (String email,LoginDto loginDto, HttpServletResponse response) {
 
         if(!userRepository.findByEmail(email).isEmpty()) {
             throw UserExistedException.EXCEPTION;
@@ -87,17 +91,33 @@ public class UserService {
         createToken(email, response);
         log.info(user.getEmail() + " (id : " + user.getId() + ") login");
 
-        return true;
-
+        return new ConnectUserResponse();
     }
 
-    public boolean signIn2 (String email, HttpServletResponse response) {
+    public ConnectUserResponse signIn2 (String email, HttpServletResponse response) {
 
         User user = findMemberEmail(email);
         createToken(email, response);
         log.info(user.getEmail() + " (id : " + user.getId() + ") login");
 
-        return true;
+        return new ConnectUserResponse();
+    }
+
+    @Transactional
+    public void signOut (String refreshToken) {
+
+        refreshToken = refreshToken.substring(7);
+
+        User user = userUtils.getUserFromSecurityContext();
+
+        if(!refreshTokenRepository.existsByRefreshToken(refreshToken)){
+            throw RefreshTokenNotExistException.EXCEPTION;
+        }
+
+        refreshTokenRepository.deleteByRefreshToken(refreshToken);
+
+        log.info("userEmail={}  logout",user.getEmail());
+
     }
 
     @Transactional

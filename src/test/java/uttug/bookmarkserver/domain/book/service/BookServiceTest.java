@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import uttug.bookmarkserver.domain.book.dto.request.CreateBookRequest;
 import uttug.bookmarkserver.domain.book.entity.Book;
 import uttug.bookmarkserver.domain.book.repository.BookRepository;
 import uttug.bookmarkserver.domain.bookmark.dto.request.CreateBookMarkRequest;
@@ -13,16 +12,12 @@ import uttug.bookmarkserver.domain.bookmark.entity.BookMark;
 import uttug.bookmarkserver.domain.bookmark.repository.BookMarkRepository;
 import uttug.bookmarkserver.domain.bookmark.service.BookMarkService;
 import uttug.bookmarkserver.domain.common.Color;
-import uttug.bookmarkserver.domain.common.Gender;
 import uttug.bookmarkserver.domain.user.entity.User;
 
 import javax.persistence.EntityManager;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest

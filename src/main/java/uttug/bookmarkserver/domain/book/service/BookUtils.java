@@ -7,6 +7,8 @@ public interface BookUtils {
 
     Book queryBook(Long bookId);
 
+    void addCompleteReading();
+
 
 
 }

@@ -1,5 +1,5 @@
 package uttug.bookmarkserver.domain.common;
 
 public enum Color {
-    RED,ORANGE,YELLOW,GREEN,BLUE
+    PINK,ORANGE,GREEN,BLUE,PURPLE
 }

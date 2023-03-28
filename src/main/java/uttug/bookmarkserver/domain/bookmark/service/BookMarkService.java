@@ -96,7 +96,7 @@ public class BookMarkService extends BaseEntity {
     }
 
 
-    // 북마크 리스트 가져오기 (날짜순서)
+    // 북마크 리스트 가져오기 (페이지 순서)
     public Slice<BookMarkInfoDto> bookMarkList(Long bookId, Integer page){
 
         String currentUserEmail = SecurityUtils.getCurrentUserEmail();
@@ -105,7 +105,7 @@ public class BookMarkService extends BaseEntity {
 
         book.validUserIsHost(currentUserEmail);
 
-        PageRequest pageRequest = PageRequest.of(page,3, Sort.Direction.DESC,"checkPageNum");
+        PageRequest pageRequest = PageRequest.of(page,20, Sort.Direction.DESC,"checkPageNum");
 
         Slice<BookMark> bookMarkList = bookMarkRepository.findAllByBookId(bookId,pageRequest);
 

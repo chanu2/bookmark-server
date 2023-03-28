@@ -1,19 +1,22 @@
 package uttug.bookmarkserver.domain.book.service;
 
 
+import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uttug.bookmarkserver.domain.book.dto.request.CreateBookRequest;
+import uttug.bookmarkserver.domain.book.dto.request.HomeBookDto;
 import uttug.bookmarkserver.domain.book.dto.request.UpdateBookRequest;
 import uttug.bookmarkserver.domain.book.dto.response.*;
 import uttug.bookmarkserver.domain.book.entity.Book;
 import uttug.bookmarkserver.domain.book.exception.BookNotFoundException;
 import uttug.bookmarkserver.domain.book.repository.BookQueryRepository;
 import uttug.bookmarkserver.domain.book.repository.BookRepository;
-import uttug.bookmarkserver.domain.bookmark.entity.BookMark;
+import uttug.bookmarkserver.domain.likes.dto.LikeBookResponse;
 import uttug.bookmarkserver.domain.likes.entity.Likes;
 import uttug.bookmarkserver.domain.likes.repository.LikesRepository;
 import uttug.bookmarkserver.domain.likes.service.LikesUtils;
@@ -22,10 +25,11 @@ import uttug.bookmarkserver.global.utill.security.SecurityUtils;
 import uttug.bookmarkserver.global.utill.user.UserUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static java.lang.Math.min;
 
 @Service
 @RequiredArgsConstructor
@@ -83,15 +87,19 @@ public class BookService implements BookUtils {
 
 
     // 내가 쓴 책 홈화면 리스트
-//    public List<Book> getMyHomeBookList(){
-//        String currentUserEmail = SecurityUtils.getCurrentUserEmail();
-//        List<Book> homeBookList = bookRepository.findHomeBookList(currentUserEmail);
-//
-//
-//        homeBookList.stream().
-//        return
-//
-//    }
+    public List<List<HomeBookDto>> getMyHomeBookList(){
+
+        String currentUserEmail = SecurityUtils.getCurrentUserEmail();
+
+        List<Book> homeBookList = bookRepository.findHomeBookList(currentUserEmail);
+
+        List<HomeBookDto> bookList = homeBookList.stream().map(b -> new HomeBookDto(b)).collect(Collectors.toList());
+
+        List<List<HomeBookDto>> partition = Lists.partition(bookList, 4);
+
+        return partition;
+
+    }
 
     // 자랑하기
     @Transactional
@@ -153,7 +161,7 @@ public class BookService implements BookUtils {
     // 북클럽리스트
     public List<BookClubInfoDto> bookClubList(Integer page){
 
-        PageRequest pageRequest = PageRequest.of(page,3, Sort.Direction.DESC,"likeNumber");
+        PageRequest pageRequest = PageRequest.of(page,20, Sort.Direction.DESC,"likeNumber");
 
         List<Book> bookList = bookRepository.findAllByRegistrationStatus(pageRequest, true).getContent();
 
@@ -181,7 +189,7 @@ public class BookService implements BookUtils {
 
 
     @Transactional
-    public Boolean saveLike(Long bookId){
+    public LikeBookResponse saveLike(Long bookId){
 
         String findEmail = SecurityUtils.getCurrentUserEmail();
 
@@ -200,12 +208,13 @@ public class BookService implements BookUtils {
             likesRepository.save(like);
             book.addLikeNum();
 
-            return true;
+            return new LikeBookResponse(true);
 
         }else {
             book.subLikeNum();
             likesRepository.deleteByBookIdAndUserEmail(bookId,findEmail);
-            return false;
+            return new LikeBookResponse(false);
+
         }
     }
 
@@ -230,7 +239,13 @@ public class BookService implements BookUtils {
                 .orElseThrow(() -> BookNotFoundException.EXCEPTION);
     }
 
+    @Override
+    public void addCompleteReading() {
+        List<Book> booKCompletedStatus = bookRepository.findAllByCompletedStatus(false);
 
+        booKCompletedStatus.forEach(Book::addElapsedDay);
+
+    }
 
 
 }

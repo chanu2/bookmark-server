@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uttug.bookmarkserver.domain.user.dto.request.ChangeUserRequest;
 import uttug.bookmarkserver.domain.user.dto.request.LoginDto;
+import uttug.bookmarkserver.domain.user.dto.response.ConnectUserResponse;
 import uttug.bookmarkserver.domain.user.dto.response.UserProfileResponse;
 import uttug.bookmarkserver.domain.user.service.UserService;
 import uttug.bookmarkserver.global.googleVerifier.TokenVerifier;
@@ -27,30 +28,36 @@ public class UserController {
 
     // 로그인
     @PostMapping("/signIn")
-    public void signIn(@RequestParam String idTokenString,HttpServletResponse response) throws GeneralSecurityException, IOException {
+    public ConnectUserResponse signIn(@RequestParam String idTokenString, HttpServletResponse response) throws GeneralSecurityException, IOException {
 
         String email = tokenVerifier.tokenVerify(idTokenString);
-        userService.signIn(email, response);
+        return userService.signIn(email, response);
+
     }
 
     // 회원가입
     @PostMapping("/signUp")
-    public void signUp(@RequestParam String idTokenString, @RequestBody LoginDto loginDto, HttpServletResponse response) throws GeneralSecurityException, IOException {
+    public ConnectUserResponse signUp(@RequestParam String idTokenString, @RequestBody LoginDto loginDto, HttpServletResponse response) throws GeneralSecurityException, IOException {
 
         String email = tokenVerifier.tokenVerify(idTokenString);
         log.info("email={}",email);
-
-        userService.signUp(email, loginDto, response);
+        return userService.signUp(email, loginDto, response);
 
     }
 
+    //로그아웃
+    @PostMapping("/logOut")
+    public void signOut(@RequestHeader("RefreshToken") String refreshToken) {
+        userService.signOut(refreshToken);
+    }
+
     @PostMapping("/signUp2")
-    public boolean signUp2(@RequestParam String email, @RequestBody LoginDto loginDto, HttpServletResponse response) {
+    public ConnectUserResponse signUp2(@RequestParam String email, @RequestBody LoginDto loginDto, HttpServletResponse response) {
         return userService.signUp2(email, loginDto, response);
     }
 
     @PostMapping("/signIn2")
-    public boolean signIn2(@RequestParam String email,HttpServletResponse response) {
+    public ConnectUserResponse signIn2(@RequestParam String email,HttpServletResponse response) {
         return userService.signIn2(email, response);
     }
 

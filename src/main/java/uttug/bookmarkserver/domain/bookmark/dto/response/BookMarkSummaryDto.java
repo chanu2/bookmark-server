@@ -11,7 +11,6 @@ import javax.persistence.Enumerated;
 @Getter
 public class BookMarkSummaryDto {
     private String summary;
-
     public BookMarkSummaryDto(BookMark bookMark) {
         this.summary = bookMark.getSummary();
     }

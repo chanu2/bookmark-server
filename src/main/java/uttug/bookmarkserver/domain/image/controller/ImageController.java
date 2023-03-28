@@ -15,7 +15,7 @@ import uttug.bookmarkserver.domain.image.service.ImageService;
 public class ImageController {
      private final ImageService imageService;
     @PostMapping("/upload")
-    public UploadImageResponse uploadImage(@RequestPart MultipartFile file) {
+    public UploadImageResponse uploadImage(@RequestPart(value = "file") MultipartFile file) {
         return imageService.uploadImage(file);
     }
 

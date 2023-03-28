@@ -3,9 +3,11 @@ package uttug.bookmarkserver.domain.book.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import uttug.bookmarkserver.domain.book.dto.request.CreateBookRequest;
+import uttug.bookmarkserver.domain.book.dto.request.HomeBookDto;
 import uttug.bookmarkserver.domain.book.dto.request.UpdateBookRequest;
 import uttug.bookmarkserver.domain.book.dto.response.*;
 import uttug.bookmarkserver.domain.book.service.BookService;
+import uttug.bookmarkserver.domain.likes.dto.LikeBookResponse;
 
 import java.util.List;
 
@@ -17,7 +19,6 @@ public class BookController {
 
     @PostMapping("/create")
     public BookResponse createBook(@RequestBody CreateBookRequest createBookRequest){
-
         return bookService.createBook(createBookRequest);
     }
 
@@ -44,7 +45,14 @@ public class BookController {
     // 나의 책 리스트 보여주기
     @GetMapping("/my")
     public List<BookDetailResponse> myBookList(){
+
         return bookService.myBookList();
+    }
+
+    @GetMapping("/home")
+    public List<List<HomeBookDto>> homeBookList(){
+
+        return bookService.getMyHomeBookList();
     }
 
     @GetMapping("/summary/{bookId}")
@@ -65,16 +73,9 @@ public class BookController {
 
 
     @PostMapping("/likes/{bookId}")
-    public void saveLikes(@PathVariable Long bookId){
-        bookService.saveLike(bookId);
+    public LikeBookResponse saveLikes(@PathVariable Long bookId){
+       return bookService.saveLike(bookId);
     }
-
-
-//    @GetMapping("/summary/{bookId}")
-//    public BookSummaryResponse bookSummary( @PathVariable Long bookId){
-//        return bookService.bookSummary(bookId);
-//    }
-
 
 
 

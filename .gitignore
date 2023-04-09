@@ -18,6 +18,9 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
+
+*.sql
+*.yml
 .idea
 *.iws
 *.iml

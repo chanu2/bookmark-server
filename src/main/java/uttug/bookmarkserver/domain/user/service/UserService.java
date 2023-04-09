@@ -71,37 +71,6 @@ public class UserService {
 
     }
 
-    @Transactional
-    public ConnectUserResponse signUp2 (String email,LoginDto loginDto, HttpServletResponse response) {
-
-        if(!userRepository.findByEmail(email).isEmpty()) {
-            throw UserExistedException.EXCEPTION;
-        }
-
-        User user = userRepository.save(
-                User.builder()
-                        .email(email)
-                        .nickname(loginDto.getNickname())
-                        .profilePath(loginDto.getProfilePath())
-                        .roles(Collections.singletonList("ROLE_USER"))
-                        .build());
-
-        // 어세스, 리프레시 토큰 발급 및 헤더 설정
-        log.info("email={}",email);
-        createToken(email, response);
-        log.info(user.getEmail() + " (id : " + user.getId() + ") login");
-
-        return new ConnectUserResponse();
-    }
-
-    public ConnectUserResponse signIn2 (String email, HttpServletResponse response) {
-
-        User user = findMemberEmail(email);
-        createToken(email, response);
-        log.info(user.getEmail() + " (id : " + user.getId() + ") login");
-
-        return new ConnectUserResponse();
-    }
 
     @Transactional
     public void signOut (String refreshToken) {
@@ -139,7 +108,6 @@ public class UserService {
 
     public void createToken(String email, HttpServletResponse response) {
 
-        log.info("email={}",email);
 
         String accessToken = jwtUtil.createAccessToken(email, Collections.singletonList("ROLE_USER"));
         String refreshToken = jwtUtil.createRefreshToken(email, Collections.singletonList("ROLE_USER"));
@@ -147,12 +115,8 @@ public class UserService {
         jwtUtil.setHeaderAccessToken(response, accessToken);
         jwtUtil.setHeaderRefreshToken(response, refreshToken);
 
-        log.info("email={}",email);
-        log.info("---------------------------------------------------------------------");
-
         refreshTokenRepository.save(new RefreshToken(refreshToken));
 
-        log.info("---------------------------------------------------------------------");
     }
 
     public User findMemberEmail(String email) {

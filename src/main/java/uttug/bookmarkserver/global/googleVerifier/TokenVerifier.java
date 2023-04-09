@@ -44,13 +44,6 @@ public class TokenVerifier {
 
             String email = payload.getEmail();
 
-            String name = (String) payload.get("name");
-            String pictureUrl = (String) payload.get("picture");
-
-            log.info("email={}", email);
-            log.info("name={}", name);
-            log.info("pictureUrl={}", pictureUrl);
-
             return email;
         }
         else {

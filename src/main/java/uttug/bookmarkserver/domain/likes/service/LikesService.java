@@ -24,36 +24,6 @@ import java.util.stream.Collectors;
 public class LikesService implements LikesUtils {
 
     private final LikesRepository likesRepository;
-    private final UserUtils userUtils;
-
-
-//    @Transactional
-//    public Boolean saveLike(Long bookId){
-//
-//        String findEmail = SecurityUtils.getCurrentUserEmail();
-//
-//        Optional<Likes> findLike = likesRepository.findByBookIdAndUserEmail(bookId, findEmail);
-//
-//        User user = userUtils.getUserByEmail(findEmail);
-//        Book book = bookUtils.queryBook(bookId);
-//
-//        if(findLike.isEmpty()){
-//
-//            Likes like = Likes.builder()
-//                    .book(book)
-//                    .user(user)
-//                    .build();
-//
-//            likesRepository.save(like);
-//            book.addLikeNum();
-//
-//            return true;
-//        }else {
-//            book.subLikeNum();
-//            likesRepository.deleteByBookIdAndUserEmail(bookId,findEmail);
-//            return false;
-//        }
-//    }
 
     @Override
     public Boolean findLikes(Long bookId, String email) {

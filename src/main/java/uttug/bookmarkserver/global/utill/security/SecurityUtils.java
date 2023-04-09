@@ -1,7 +1,5 @@
 package uttug.bookmarkserver.global.utill.security;
 
-
-
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import uttug.bookmarkserver.global.exception.UserNotFoundException;

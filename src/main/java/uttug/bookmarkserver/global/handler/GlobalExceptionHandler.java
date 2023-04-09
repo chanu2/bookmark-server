@@ -34,10 +34,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(BookMarkException.class)
-    public ResponseEntity<ErrorResponse> runEatExceptionHandler(
+    public ResponseEntity<ErrorResponse> bookMarkExceptionHandler(
             BookMarkException e, HttpServletRequest request) {
 
-        log.info("-----------------------------------------------------------------------------");
 
         ErrorCode code = e.getErrorCode();
         ErrorResponse errorResponse =

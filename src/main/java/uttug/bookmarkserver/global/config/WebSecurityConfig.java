@@ -36,8 +36,6 @@ public class WebSecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/api/v1/user/signUp",
                         "/api/v1/asset/profile/random",
-                        "/api/v1/user/signUp2",
-                        "/api/v1/user/signIn2",
                         "/api/v1/user/signIn").permitAll()
 //                .antMatchers("/admin/**").hasRole("ADMIN")
 //                .antMatchers("/guest/**").hasRole("GUEST")

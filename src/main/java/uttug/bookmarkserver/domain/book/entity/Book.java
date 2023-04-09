@@ -106,7 +106,6 @@ public class Book extends BaseEntity {
     }
 
     public void completeBook(){
-        log.info("이로직을 왜 안타지?");
         this.completedStatus = true; }
 
 

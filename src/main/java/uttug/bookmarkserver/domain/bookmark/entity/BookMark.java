@@ -72,12 +72,8 @@ public class BookMark extends BaseEntity {
     }
 
     public void CheckComplete(){
-        log.info("이거는 타나");
-        log.info("책 페이지={}",book.getPageNumber());
-        log.info("책갈피 페이지={}",checkPageNum);
 
         if(book.getPageNumber().equals(checkPageNum)){
-            log.info("이거는 타나");
             book.completeBook();
         }
     }

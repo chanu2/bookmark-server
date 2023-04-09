@@ -51,15 +51,7 @@ public class UserController {
         userService.signOut(refreshToken);
     }
 
-    @PostMapping("/signUp2")
-    public ConnectUserResponse signUp2(@RequestParam String email, @RequestBody LoginDto loginDto, HttpServletResponse response) {
-        return userService.signUp2(email, loginDto, response);
-    }
 
-    @PostMapping("/signIn2")
-    public ConnectUserResponse signIn2(@RequestParam String email,HttpServletResponse response) {
-        return userService.signIn2(email, response);
-    }
 
     @PostMapping("/change")
     public void changeNickname(@RequestBody ChangeUserRequest changeUserRequest) {
